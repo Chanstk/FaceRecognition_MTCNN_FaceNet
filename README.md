@@ -5,7 +5,7 @@ This repository is a face recognition system. The face detection part is the imp
 1. opencv3
 2. openblas
 3. tensorflow(C++ lib)
-## usage
+## Usage
 1. cd root_directory
 2. vim CMakeLists.txt
 3. change the path of tensorflow/opencv/openblas according to your machine
@@ -13,4 +13,7 @@ This repository is a face recognition system. The face detection part is the imp
 5. cmake . ( or cmake -DCMAKE_BUILD_TYPE = RELEASE . if you care about the speed)
 6. make
 7. ./main
+## Inspiration
+1. Facenet part : the model file is taken from [here](https://github.com/davidsandberg/facenet)
+2. MTCNN part : the code is taken from [here](https://github.com/AlphaQi/MTCNN-light) 
 
