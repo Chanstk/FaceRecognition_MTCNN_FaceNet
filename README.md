@@ -1,6 +1,6 @@
 # Face recognition system
 ## Introduction
-This repository is a face recognition system. The face detection part is the implementation of MTCNN algorithm and the recognition part using tensorflow c++ api is the implementation of facenet algorithm.
+This repository is a face recognition system(not finished yet). The face detection part is the implementation of MTCNN algorithm and the recognition part using tensorflow c++ api is the implementation of facenet algorithm.
 ## Dependencies
 1. opencv3
 2. openblas
