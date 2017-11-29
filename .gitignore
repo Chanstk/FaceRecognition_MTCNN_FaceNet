@@ -1,0 +1,10 @@
+CMakeFiles/
+LICENSE
+main
+.DS_Store
+Makefile
+*.pb
+CMakeCache.txt
+*.jpg
+*.png
+*.cmake
