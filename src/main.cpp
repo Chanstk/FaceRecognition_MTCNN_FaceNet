@@ -25,13 +25,13 @@ using namespace tensorflow;
 using tensorflow::Tensor;
 using tensorflow::Status;
 using namespace std;
-int height = 160;
-int width = 160;
-int depth = 3;
+const int height = 160;
+const int width = 160;
+const int depth = 3;
 float * result = new float[128];
-string input_layer_1 = "input:0";
-string input_layer_2 = "phase_train:0";
-string output_layer = "embeddings:0";
+const string input_layer_1 = "input:0";
+const string input_layer_2 = "phase_train:0";
+const string output_layer = "embeddings:0";
 
 void getImageTensor(tensorflow::Tensor &input_tensor, Mat& Image){
 
@@ -69,19 +69,22 @@ void getImageTensor(tensorflow::Tensor &input_tensor, Mat& Image){
     }
     // cout<<"The image preprocess cost "<<1000 *(double)(getTickCount()-start)/getTickFrequency()<<" ms"<<endl;
 }
-double Recogize(std::unique_ptr<tensorflow::Session> &session, Tensor& image, float * res){
+double Recogize(const std::unique_ptr<tensorflow::Session> &session, Tensor& image, float * res){
 
     Tensor phase_train(tensorflow::DT_BOOL, tensorflow::TensorShape());
     phase_train.scalar<bool>()() = false;
 
     std::vector<Tensor> outputs;
     int64 start=getTickCount();
-    Status run_status = session->Run({{input_layer_1, image}, {input_layer_2,phase_train }}, {output_layer}, {}, &outputs);
+    Status run_status = session->Run({{input_layer_1, image},
+    							 {input_layer_2,phase_train }},
+    							 {output_layer},
+    							 {},
+    							 &outputs);
     // cout<<"The network cost "<<1000 * (double)(getTickCount()-start)/getTickFrequency()<<" ms"<<endl;
     // cout<<outputs[0].DebugString()<<endl;
 
     if(!run_status.ok()){
-
         LOG(ERROR) << "Running model failed"<<run_status;
         return 0;
     }
@@ -96,9 +99,6 @@ double Recogize(std::unique_ptr<tensorflow::Session> &session, Tensor& image, fl
         return sqrt(sum);
     }
     return 0;
-    // for(int i = 0; i < 128; i++)
-    //     cout<<outMap(i)<<" ";
-    // cout<<endl;
 }
 
 void getSession(string graph_path, std::unique_ptr<tensorflow::Session> &session){
@@ -117,11 +117,17 @@ void getSession(string graph_path, std::unique_ptr<tensorflow::Session> &session
         return ;
     }
 }
-int main()
+
+int main(int argc, const char * argv[])
 {
+	if(argc < 3){
+		cout<<"Please specify your photo and your name on common line";
+		return -1;
+	}
+	
     string graph_path = "./model/20170512-110547.pb";
-    
-    Mat chenlian = imread("chen.jpg");
+    string testName = argv[2];
+    Mat chenlian = imread(argv[1]);
     Tensor chen(tensorflow::DT_FLOAT, tensorflow::TensorShape({ 1,height,width,depth }));
     Tensor img(tensorflow::DT_FLOAT, tensorflow::TensorShape({ 1,height,width,depth }));
     unique_ptr<tensorflow::Session> session;
@@ -163,7 +169,7 @@ int main()
                 getImageTensor(img, face);
                 double r = Recogize(session, img, NULL);
                 if(r < 0.8)
-                    putText(image,"Shitao Chen",Point(50,gap),FONT_HERSHEY_SIMPLEX,1,Scalar(255,23,0),4,8);
+                    putText(image,testName,Point(50,gap),FONT_HERSHEY_SIMPLEX,1,Scalar(255,23,0),4,8);
                 else
                     putText(image,"others",Point(50,gap),FONT_HERSHEY_SIMPLEX,1,Scalar(255,23,0),4,8);
                 gap += 30;
